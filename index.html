@@ -944,6 +944,10 @@ const Grader = (() => {
     `Oh\\. Oh[.!]`, `(?:several|a few|two|three|long|a long|many) beats\\b`, `(?<=(?:^|\\n)[ \\t]*)(?:A|a) pause\\.(?=[ \\t]*(?:\\n|$))`,
     `everything and nothing`, `(?:about |of )(?:nothing and everything|anything and everything|everything and anything)`, `(?:about |discussed )everything under the sun`,
     `(?:talked|talking|chatted|chatting|spoke|speaking) (?:for hours |late into the night |until dawn |all night |until the sun came up )?about (?:everything|anything) and (?:nothing|everything|anything)`,
+    // "…but there was no heat in it" and its relatives
+    `(?:but |though |although )?there(?:'s| was| is) no (?:real |actual |true )?(?:heat|venom|bite|malice|sting|anger|edge|teeth|force|conviction|fire) (?:in|to|behind) (?:it|the words?|${P} (?:words?|voice|tone|glare|threat|eyes|gaze|look|retort|scowl|protest))`,
+    `(?:but |though )?(?:it|the words?|${P} (?:words?|voice|tone|glare|threat|retort|protest|scowl)) (?:had|held|carried|lacked) (?:no |any )?(?:real |actual |true )?(?:heat|venom|bite|malice|sting|teeth|conviction)(?: (?:in|to|behind) (?:it|them))?`,
+    `(?:said|says|muttered|mutters|grumbled|grumbles|snapped|snaps|replied|answered|retorted|growled|protested|complained|added|spoke|scolded|grunted|huffed|glared|scowled)(?: (?:it|this|that))?,? without (?:any )?(?:real |actual |true )?(?:heat|venom|bite|malice|sting)\\b`,
     // "He looked at him. Really looked at him." / "It was nice. Really nice."
     `((?:look|see|saw|seen|listen|hear|heard|stare|watch|notice|kiss|touch|feel|felt|smile|laugh|breathe|understand|understood|know|knew|talk|hug|hold|held)\\w*)(?: (?:at |to |into |for )?(?:him|her|them|me|you|us|it|each other))?[.!]\\s+(?:And )?(?:really|truly|actually|properly|genuinely) \\1\\b`,
     `(?:was|felt|looked|seemed|sounded|tasted) (\\w{3,})[.!]\\s+(?:Really|Truly|So|Very) \\1[.!]`,
