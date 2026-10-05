@@ -1099,6 +1099,11 @@ const Grader = (() => {
   const EP_COMP = 'older|younger|taller|shorter|smaller|bigger|larger|elder|slighter|broader';
   const EP_HAIR = 'blond|blonde|brunet|brunette|redhead|raven-haired|dark-haired|fair-haired|light-haired|black-haired|brown-haired|silver-haired|white-haired|golden-haired|red-haired|curly-haired|messy-haired|shaggy-haired|blue-eyed|green-eyed|brown-eyed|grey-eyed|gray-eyed|hazel-eyed|dark-eyed|amber-eyed|golden-eyed|silver-eyed';
   const EP_WHO = 'man|woman|boy|girl|guy|lad|lass|teen|teenager|male|female|kid';
+  // nationality and origin used in place of a name ("the Brit", "the younger Russian", "the Korean man")
+  const EP_NAT = 'Brit|Briton|American|Yank|Yankee|Russian|Italian|Englishman|Englishwoman|Frenchman|Frenchwoman|Irishman|Irishwoman|Scot|Scotsman|Scotswoman|Welshman|Aussie|Australian|Canadian|German|Korean|Japanese|Chinese|Spaniard|Mexican|Brazilian|Swede|Norwegian|Dane|Greek|Turk|Dutchman|Indian|Egyptian|Israeli|Iranian|Arab|Texan|Southerner|Northerner|New Yorker|Londoner|Parisian|Belgian|Austrian|Swiss|Portuguese|Argentinian|Colombian|Cuban|Filipino|Vietnamese|Thai|Ukrainian|Hungarian|Czech|Kiwi(?= (?:man|woman|guy))';
+  const EP_NAT_ADJ = 'British|American|Russian|Italian|English|French|Irish|Scottish|Welsh|Australian|Canadian|German|Korean|Japanese|Chinese|Spanish|Mexican|Brazilian|Swedish|Norwegian|Danish|Greek|Turkish|Dutch|Indian|Egyptian|Israeli|Iranian|Arab|Belgian|Austrian|Swiss|Portuguese|Ukrainian|Polish|Vietnamese|Thai|Filipino|Cuban';
+  // species, kind or rank in place of a name ("the alpha", "the vampire", "the demon")
+  const EP_KIND = 'alpha|beta|omega|vampire|werewolf|lycan|shifter|demon|angel|fae|faerie|fairy|elf|dwarf|hobbit|witch|wizard|mage|sorcerer|sorceress|warlock|hybrid|mutant|android|cyborg|alien|human|mortal|immortal|god|goddess|deity|incubus|succubus|siren|merman|mermaid|centaur|nymph|ghoul|lich|necromancer|half-blood|halfblood|half-elf|demigod|sentinel';
   // the epithet used as a subject: followed by a verb, a possessive, or the end of a clause
   const EP_ACT = `'s\\b|[,.;:!?]| (?:said|asked|replied|answered|sighed|smiled|grinned|smirked|laughed|chuckled|muttered|murmured|whispered|nodded|shrugged|frowned|huffed|snorted|scoffed|groaned|hummed|glanced|looked|stared|rolled|raised|pulled|pushed|leaned|turned|stepped|walked|moved|reached|froze|flinched|blushed|winked|was|had|could|would|did|didn't|wasn't|hadn't|couldn't|just|only|then|still|also|ran|shook|took|put|set|kept|bit|held|stood|sat|came|went|made|gave|knew|thought|felt|told|let|swore|spoke|drew|threw|wore|rose|fell|caught|bent|grew|hid|lay|led|left|met|paid|sent|slid|spun|stuck|struck|swung|tore|woke|wrote|[a-z]{2,}ed)\\b`;   // any past-tense verb: "the blonde crossed his arms"
   const EPITHETS = [
@@ -1106,8 +1111,11 @@ const Grader = (() => {
     `the other (?:${EP_WHO})\\b`,
     `the (?:${EP_COMP}|${EP_HAIR}) of the (?:two|three|pair|trio)(?=${EP_ACT})`,
     `the (?:${EP_COMP}|${EP_HAIR}) of the (?:boys|girls|men|women|brothers|sisters)\\b`,
-    `the (?:${EP_COMP}|${EP_HAIR}|ginger)(?=${EP_ACT})`
-  ].map(s => new RegExp('\\b' + s, 'gi'));
+    `the (?:${EP_COMP}|${EP_HAIR}|ginger)(?=${EP_ACT})`,
+    `the (?:(?:${EP_COMP}|${EP_HAIR}) )?(?:${EP_NAT})(?=${EP_ACT})`, `the (?:(?:${EP_COMP}) )?(?:${EP_NAT_ADJ}) (?:${EP_WHO})\\b`,
+  ].map(s => new RegExp('\\b' + s, 'gi')).concat(
+    // species and rank only in lower case: "the Witch" or "the Wizard" written as a title is that character's name
+    [`[Tt]he (?:(?:${EP_COMP}|${EP_HAIR}) )?(?:${EP_KIND})(?=${EP_ACT})`, `[Tt]he (?:(?:${EP_COMP}) )?(?:${EP_KIND}) (?:${EP_WHO})\\b`].map(s => new RegExp('\\b' + s, 'g')));
   // ---- Clinical or coy body words ----
   const COY_ADJ = 'lithe|slender|lean|petite|muscular|toned|lanky|slim|curvy|willowy|feminine|masculine|slight|delicate|trembling|shaking|naked|nude|sleeping|limp|smaller|larger|bigger';
   const COY_BODY = [
@@ -1469,7 +1477,7 @@ const Grader = (() => {
     M('words', 'cliches', 'Clichés', k(clW), `${cl.length} found`, 'Stock phrases readers have seen many times. Stock lines of dialogue ("We need to talk," "It\'s not what it looks like") count a quarter as much. Counts 3× within this section.', { flags: cl, weight: 3 });
 
     const ep = uniq(EPITHETS.flatMap(re => scan(re, { narr: true }))).map(x => F(x.s, x.e, 'warn', `Epithet: "${x.m[0]}"`, 'epithets', "use the character's name or a pronoun"));
-    M('words', 'epithets', 'Epithets for characters', k(ep.length, narr), `${fmt(k(ep.length, narr))} / 1k`, '"The older man", "the blonde", "the taller of the two" in place of a name. Fine for a stranger the viewpoint character doesn\'t know; for known characters, a name or pronoun reads more naturally.', { flags: ep });
+    M('words', 'epithets', 'Epithets for characters', k(ep.length, narr), `${fmt(k(ep.length, narr))} / 1k`, '"The older man", "the blonde", "the taller of the two", "the Brit", "the alpha", "the vampire" in place of a name. Fine for a stranger the viewpoint character doesn\'t know; for known characters, a name or pronoun reads more naturally.', { flags: ep });
 
     const coy = uniq(COY_BODY.flatMap(([re, fix]) => scan(re, { narr: true }).map(y => ({ ...y, fix })))).map(x => F(x.s, x.e, 'warn', `Clinical or coy: "${x.m[0]}"`, 'coyBody', x.fix));
     M('words', 'coyBody', 'Clinical or coy body words', k(coy.length, narr), `${coy.length} found`, '"Ministrations", "appendage", "the male", "her lithe form": words that sound like a lab report or a euphemism and pull the reader out of the scene.', { flags: coy });
