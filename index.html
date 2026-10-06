@@ -1483,16 +1483,13 @@ const Grader = (() => {
     const cl = []; for (const x of uniq(CLICHES.flatMap((re, i) => (between('hedging', 'cliches', i, CLICHES.length), scan(re))))) cl.push(F(x.s, x.e, 'warn', `Cliché: "${x.m[0]}"`, 'cliches', 'rewrite in your own words'));
     const DCL = CLICHE_DIALOGUE.map(x => new RegExp('\\b' + x + '(?![\\w])', 'gi'));
     for (const x of uniq(DCL.flatMap(re => scan(re, { test: (m, s0) => mask[s0] === 1 })))) if (!cl.some(c => x.s < c.e && c.s < x.e)) { const f = F(x.s, x.e, 'warn', `Cliché in dialogue: "${x.m[0]}"`, 'cliches', 'a line only this character would say'); f.w = 0.25; cl.push(f); }
-    // Safeword and colour check-ins ("Green?", "What's your color?", "Remember your safeword"): one per scene is good practice;
-    // every further one in the same scene (scenes split at chapter headings and scene breaks) counts as a cliché
+    // Safeword and colour check-ins ("Green?", "What's your color?", "Remember your safeword"): each counts as a cliché. The cliché
+    // check is a rate per 1,000 words, so an occasional check-in barely moves it; a stream of them does
     { const CHK = [/"\s*(?:(?:\w+|baby|sweetheart|pet|love|darling|honey|sweetheart),\s*)?(?:(?:are |is |you |you're |still |all |we )*)?(?:colou?r|green|yellow)(?:,\s*(?:baby|sweetheart|pet|love|darling|honey|kitten|princess|[A-Z][a-z]+))?\s*\?/gi,
         /\b(?:what'?s|what is|give me|tell me|i need|i want|need) (?:your|ya|yer) colou?r\b/gi, /\b(?:asked|asks|asking|checked|checks|checking|demanded|prompted|requested) (?:for |on )?(?:his|her|their|my|your) colou?r\b/gi,
         /\bsafe[- ]?words?\b/gi];
       const hits = uniq(CHK.flatMap(re => scan(re))).sort((a, b) => a.s - b.s);
-      const breaks = headings.filter(h => h.kind === 'heading').map(h => h.e).sort((a, b) => a - b), sceneAt = pos => breaks.filter(e => e <= pos).length;
-      const seen = new Map();
-      for (const x of hits) { const sc = sceneAt(x.s), n = (seen.get(sc) || 0) + 1; seen.set(sc, n);
-        if (n > 1) cl.push(F(x.s, x.e, 'warn', `Repeated safeword / colour check-in: "${x.m[0].replace(/^"\s*/, '')}" (check-in ${n} in this scene)`, 'cliches', 'one check-in per scene shows care; more read as a formula. Show consent through the scene instead')); }
+      for (const x of hits) if (!cl.some(c => x.s < c.e && c.s < x.e)) cl.push(F(x.s, x.e, 'warn', `Safeword / colour check-in: "${x.m[0].replace(/^"\s*/, '')}"`, 'cliches', 'a stock beat in BDSM scenes; show consent through the scene instead of repeating the formula'));
     }
     const clW = cl.reduce((a, f) => a + (f.w ?? 1), 0);
     M('words', 'cliches', 'Clichés', k(clW), `${cl.length} found`, 'Stock phrases readers have seen many times. Stock lines of dialogue ("We need to talk," "It\'s not what it looks like") count a quarter as much. Counts 3× within this section.', { flags: cl, weight: 3 });
