@@ -42,7 +42,7 @@ All rates are per 1,000 words, or per 1,000 narration words where the report say
 
 | Section | Weight | Checks |
 |---|---|---|
-| Word choice & variety | 3 | Overused words and phrases (5× within the section), clichés (3×; stock dialogue lines count ¼), filler, adverbs, hedging, redundancy, epithets ("the blonde"), echoes, vocabulary range, Britishisms, names vs. pronouns in narration, nouns for verbs ("made a decision", "gave a nod") |
+| Word choice & variety | 3 | Overused words and phrases (5× within the section), clichés (3×; stock dialogue lines count ¼), filler, adverbs, hedging, redundancy, epithets ("the blonde"), echoes, vocabulary range, Britishisms, names vs. pronouns in narration, nouns for verbs ("made a decision", "gave a nod"), "the face of Harry" for "Harry's face" |
 | Show vs. tell | 1 | Filter words, named emotions, stock body language, non-visual senses, head-hopping within a scene, concrete vs. abstract wording (concreteness ratings from Brysbaert et al. 2014), body parts acting on their own ("her eyes followed him") |
 | Sentences & paragraphs | 1 | Sentence length and variety, repeated openers, -ing openers, passive and progressive voice, fragments, long sentences, stacked adjectives and similes, appositives, paragraph length, stock chapter openings (waking up, weather, mirror) and "it was all a dream" endings, "There was / It was… that" openings, backstory stretches told in the past perfect, dangling or impossible -ing openers |
 | Dialogue | 1 | Dialogue share, showy tags, adverbs on tags, dialogue punctuation, long unattributed runs (8+ lines), actions used as tags ("Fine," she sighed), characters naming each other, "As you know" exposition, contractions in speech, long speeches |

@@ -311,7 +311,7 @@ const Grader = (() => {
     progressive: lower(6, 14), openers: lower(0.5, 3), ingOpeners: lower(4, 10),
     adjStack: lower(0.5, 2.5), appositives: lower(2, 6), paragraphs: lower(0.25, 3), readability: higher(7, 1), daleChall: higher(6, 3),
     dlgRatio: band(20, 50, 5, 75), fancyTags: lower(20, 50), tagAdverbs: lower(1, 4), dlgPunct: lower(0, 3),
-    excl: lower(1, 5), ellipses: lower(2, 6), dashes: lower(6, 15), stacked: lower(0.1, 1.5), unattrib: lower(0.5, 2), actionTags: lower(1, 4), headHop: lower(0.5, 2), stockOpen: lower(20, 100), expletive: lower(5, 12), concrete: higher(38, 18), backstory: lower(15, 40), vocative: lower(15, 35), asYouKnow: lower(0.1, 0.8), contractions: higher(30, -15), longSpeech: lower(10, 30), nameRatio: lower(55, 80), bodyAuto: lower(0.5, 2), danglers: lower(0.15, 0.8), nominal: lower(0.6, 2.5),
+    excl: lower(1, 5), ellipses: lower(2, 6), dashes: lower(6, 15), stacked: lower(0.1, 1.5), unattrib: lower(0.5, 2), actionTags: lower(1, 4), headHop: lower(0.5, 2), stockOpen: lower(20, 100), expletive: lower(5, 12), concrete: higher(38, 18), backstory: lower(15, 40), vocative: lower(15, 35), asYouKnow: lower(0.1, 0.8), contractions: higher(30, -15), longSpeech: lower(10, 30), nameRatio: lower(55, 80), bodyAuto: lower(0.5, 2), danglers: lower(0.15, 0.8), nominal: lower(0.6, 2.5), ofPossessive: lower(0.3, 1.2),
     tier1: lower(0, 4), tier2: lower(0, 4), grammar: lower(0, 3), typos: lower(0, 3), povSlip: lower(0, 3), tense: lower(0, 2), longSent: lower(1, 4), fragments: lower(3, 10), simStack: lower(0.2, 1.5), commaSplice: lower(0.5, 2), britishisms: lower(0.3, 3)
   };
   const UNITS = {
@@ -320,7 +320,7 @@ const Grader = (() => {
     body: 'per 1,000 words', sensory: '% non-visual sense words', sentAvg: 'words per sentence', sentSpread: 'spread', crutch: 'overuse points', vocab: 'MTLD', openerTop: '% of sentences',
     passive: '% of sentences', progressive: 'per 1,000 narration words', openers: 'runs per 1,000 words', ingOpeners: '% of sentences',
     adjStack: 'per 1,000 words', appositives: 'per 1,000 narration words', paragraphs: 'per 1,000 words', readability: 'grade level', daleChall: 'Dale–Chall score', dlgRatio: '% dialogue', fancyTags: '% of tags', tagAdverbs: 'per 1,000 words',
-    dlgPunct: 'per 1,000 words', stacked: 'per 1,000 words', unattrib: 'long runs per 1,000 words', actionTags: 'per 1,000 words', headHop: 'shifts per 1,000 narration words', stockOpen: '% of chapters', expletive: 'per 1,000 narration words', concrete: '% concrete', backstory: '% of narration', vocative: 'per 1,000 dialogue words', asYouKnow: 'per 1,000 words', contractions: '% contracted', longSpeech: 'per 10,000 dialogue words', nameRatio: '% names', bodyAuto: 'per 1,000 narration words', danglers: 'per 1,000 narration words', nominal: 'per 1,000 narration words', excl: 'per 1,000 narration words', ellipses: 'per 1,000 words', dashes: 'per 1,000 words',
+    dlgPunct: 'per 1,000 words', stacked: 'per 1,000 words', unattrib: 'long runs per 1,000 words', actionTags: 'per 1,000 words', headHop: 'shifts per 1,000 narration words', stockOpen: '% of chapters', expletive: 'per 1,000 narration words', concrete: '% concrete', backstory: '% of narration', vocative: 'per 1,000 dialogue words', asYouKnow: 'per 1,000 words', contractions: '% contracted', longSpeech: 'per 10,000 dialogue words', nameRatio: '% names', bodyAuto: 'per 1,000 narration words', danglers: 'per 1,000 narration words', nominal: 'per 1,000 narration words', ofPossessive: 'per 1,000 narration words', excl: 'per 1,000 narration words', ellipses: 'per 1,000 words', dashes: 'per 1,000 words',
     tier1: 'per 1,000 words', tier2: 'per 1,000 words', grammar: 'per 1,000 words', typos: 'per 1,000 words', povSlip: 'per 1,000 words', tense: 'per 1,000 narration words', longSent: 'per 1,000 narration words', fragments: 'per 1,000 narration words', simStack: 'per 1,000 narration words', commaSplice: 'per 1,000 narration words', britishisms: 'per 1,000 words'
   };
   // Style profiles: genre targets that replace the defaults above, and category weights (w) that replace the usual ones.
@@ -1196,7 +1196,7 @@ const Grader = (() => {
     shag shags shagged shagging wank wanks wanked wanking fingering fingered rimmed rimming orgasmed climaxing grinded humped humping`));
   // Narrow "habit" checks: they take points off their section when they find a problem, but a clean result doesn't raise it
   // (otherwise every new check scoring 100 on good books would inflate everyone's grade)
-  const HABIT = new Set(words(`unattrib actionTags stacked headHop stockOpen expletive concrete backstory vocative asYouKnow contractions longSpeech nameRatio bodyAuto danglers nominal`));
+  const HABIT = new Set(words(`unattrib actionTags stacked headHop stockOpen expletive concrete backstory vocative asYouKnow contractions longSpeech nameRatio bodyAuto danglers nominal ofPossessive`));
   const OVERUSE = {
     // Trigger 1, "rare but repeated": used at least 50x its normal rate in fiction
     minRatio: 50,
@@ -1930,6 +1930,13 @@ const Grader = (() => {
       if (m) dg.push(F(s0.s, s0.s + m[0].length, 'warn', `Dangling opener: "${m[0]}"`, 'danglers', 'the -ing phrase needs to describe the subject that follows it'));
       else if (m2) dg.push(F(s0.s, s0.s + m2[0].length, 'warn', `Two actions that can't happen at once: "${m2[0]}"`, 'danglers', 'use "After …," or two sentences')); }
     M('structure', 'danglers', 'Dangling & impossible openers', k(dg.length, narr), `${dg.length} found`, '"Walking into the room, the door slammed" (the door wasn’t walking), and "Opening the door, he crossed the room" (he can’t do both at once). Approximate.', { flags: dg, weight: 0.75 });
+    // "the face of Harry" where "Harry's face" would do: body parts and belongings followed by a character's name
+    const OFN = `face|faces|hand|hands|eyes|eye|voice|hair|lips|mouth|arm|arms|shoulder|shoulders|back|neck|chest|head|body|smile|grin|fingers|cheek|cheeks|jaw|forehead|brow|lap|knees|legs|feet|wrist|waist|hips|skin|scent|laugh|gaze|expression|room|bedroom|flat|apartment|car|bed|desk|office|jacket|coat|shirt|wand|phone|bag|things|clothes|belongings`;
+    const ofp = scan(new RegExp(`\\b[Tt]he ((?:\\w+ )?)(${OFN}) of ((?:Mr\\.? |Mrs\\.? |Ms\\.? |Miss |Dr\\.? )?[A-Z][a-z]+(?: [A-Z][a-z]+)?)\\b(?!'s)`, 'g'), { narr: true,
+      test: m => { const nm = m[3].replace(/^(?:Mr\.?|Mrs\.?|Ms\.?|Miss|Dr\.?) /, '').split(' ')[0], w = nm.toLowerCase();
+        return !/^(?:God|Christ|Jesus|Heaven|Providence|Fate|Death|Nature|Time|Love|Liberty|Justice|Satan|Lucifer|Zeus|Jupiter|Allah|Buddha|Mary|Night|Day|Man|Earth|Hell|Parliament|Congress|Commons|Lords|Court|Church|Mr|Mrs|Ms|Miss|Dr|Doctor|Father|Mother|Professor|Inspector|Farmer|Sir|Lady|Lord|Captain|Uncle|Aunt|King|Queen|Prince|Princess|Saint|St|State|England|France|America|Rome|London|Paris|Europe|Egypt|Israel|Judah)$/.test(nm) && !PROPER.has(w) && !FUNC.has(w) && (isName(w) || CHAR_ONE.has(w) || USER_ONE.has(w)); } })
+      .map(x => F(x.s, x.e, 'warn', `"${x.m[0]}"`, 'ofPossessive', `${x.m[3]}'s ${x.m[1]}${x.m[2]}`));
+    M('words', 'ofPossessive', '"The face of Harry" for "Harry’s face"', k(ofp.length, narr), `${ofp.length} found`, 'A body part or belonging followed by "of" and a character’s name ("the hand of Draco", "the room of Lily") where the possessive is shorter and more natural.', { flags: ofp, weight: 0.5 });
     // Nominalizations: a noun doing a verb's job
     const nm2 = uniq(NOMINAL.flatMap(([re, fix]) => scan(re, { narr: true }).map(y => ({ ...y, fix })))).map(x => F(x.s, x.e, 'warn', `Noun for a verb: "${x.m[0]}"`, 'nominal', typeof x.fix === 'function' ? x.fix(x.m) : x.fix));
     M('words', 'nominal', 'Nouns for verbs', k(nm2.length, narr), `${fmt(k(nm2.length, narr))} / 1k`, '"Made a decision" for decided, "gave a nod" for nodded, "came to the realization" for realized, "let out a sigh" for sighed. The verb is shorter and stronger.', { flags: nm2, weight: 0.75 });
